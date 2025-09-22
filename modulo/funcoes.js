@@ -45,12 +45,9 @@ const getEstadoBySigla = function(sigla) {
         return message
     } else {
       
-        return {
-            status: false,
-            statuscode: 404,
-            message: 'Estado não encontrado.',
-            development: 'Paulo Vinicius Lima Da Silva'
-        }
+        return MESSAGE_ERROR
+            
+        
     }
 }
 
@@ -73,12 +70,7 @@ const getCapitalBySigla = function (sigla){
         return message
     } else {
       
-        return {
-            status: false,
-            statuscode: 404,
-            message: 'Estado não encontrado.',
-            development: 'Paulo Vinicius Lima Da Silva'
-        }
+        return MESSAGE_ERROR
     }
 }
 
@@ -153,28 +145,41 @@ const getEstadosIsCapitalByCountry = function(pais) {
 
 
 //Retorna as cidades existentes em um estado, filtrando pela sigla
-const getCidadesBySigla = function(sigla){
+const getCidadesBySigla = function(sigla) {
 
-    let message = {status: true,statuscode: 200,development: 'Paulo Vinicius Lima Da Silva',uf: '',descricao: '', cidades: []}
+    let message = {status: true,statuscode: 200,development: 'Paulo Vinicius Lima Da Silva',uf: '',descricao: '',quantidade_cidades: 0,cidades: []}
 
-    const estado = dados.listaDeEstados.estados.filter(function(item) {
+
+    const estado = dados.listaDeEstados.estados.find(function(item) {
         return item.sigla === sigla
     })
 
-    if(estado){
-    
-        estado.forEach(function(item){
-            message.cidades.push({
-                cidade: item.cidades
-            })
+    if (estado) {
+        message.uf = estado.sigla
+        message.descricao = estado.nome
+
+        estado.cidades.forEach(function(cidade) {
+            message.cidades.push(cidade.nome)
         })
+
+      
+        message.quantidade_cidades = message.cidades.length
+
+        return message
+    } else {
+        return {
+            status: false,
+            statuscode: 400,
+            message: 'Estado não encontrado.',
+            development: 'Paulo Vinicius Lima Da Silva'
+        }
     }
-
-
 }
 
 
-console.log(getCidadesBySigla('Acre'))
+
+
+console.log(getCidadesBySigla('AC'))
 
 module.exports = {
     getAllEstados
