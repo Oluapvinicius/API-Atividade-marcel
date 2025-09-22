@@ -88,24 +88,93 @@ const getCapitalBySigla = function (sigla){
 //Retorna a lista de estados filtrando pela região
 const getEstadosByRegiao = function(regiao){
 
-    let message = {regiao: '',estados:[], uf: '',descricao: '',capital: ''}
+    let message = {status: true,statuscode: 200,development: 'Paulo Vinicius Lima Da Silva',regiao: regiao, estados: []}
 
+    const estados = dados.listaDeEstados.estados.filter(function(item) {
+        return item.regiao === regiao
+    })
+
+    if (estados) {
+        estados.forEach(function(item) {
+            message.estados.push({
+                uf: item.nome,
+                descricao: item.nome
+            })
+        })
+
+        return message;
+    } else {
+        return {
+            status: false,
+            statuscode: 404,
+            message: 'Região não encontrada.',
+            development: 'Paulo Vinicius Lima Da Silva'
+        }
+    }
 }
 
 
 
-//Retorna a lista de estados que forma a capital de um pais filtrando pelo pais
-const getEstadosIsCapitalByCountry = function(){
+//Retorna a lista de estados 
+const getEstadosIsCapitalByCountry = function(pais) {
 
+    let message = {status: true,statuscode: 200,development: 'Paulo Vinicius Lima Da Silva',pais: pais,capitais: []};
+
+    const estados = dados.listaDeEstados.estados;
+
+    const resultado = estados.filter(function(item) {
+        return item.capital_pais && item.capital_pais.ano_inicio;
+    });
+
+    if (resultado) {
+        resultado.forEach(function(item) {
+            message.capitais.push({
+                uf: item.sigla,
+                descricao: item.nome,
+                capital: item.capital,
+                regiao: item.regiao,
+                capital_atual: item.capital_pais.capital,
+                ano_inicio: item.capital_pais.ano_inicio,
+                ano_fim: item.capital_pais.ano_fim
+            });
+        });
+
+        return message
+    } else {
+        return {
+            status: false,
+            statuscode: 404,
+            message: 'Nenhuma capital encontrada para o país informado.',
+            development: 'Paulo Vinicius Lima Da Silva'
+        }
+    }
 }
+
+
 
 //Retorna as cidades existentes em um estado, filtrando pela sigla
 const getCidadesBySigla = function(sigla){
 
+    let message = {status: true,statuscode: 200,development: 'Paulo Vinicius Lima Da Silva',uf: '',descricao: '', cidades: []}
+
+    const estado = dados.listaDeEstados.estados.filter(function(item) {
+        return item.sigla === sigla
+    })
+
+    if(estado){
+    
+        estado.forEach(function(item){
+            message.cidades.push({
+                cidade: item.cidades
+            })
+        })
+    }
+
+
 }
 
 
-console.log(getCapitalBySigla('AC'))
+console.log(getCidadesBySigla('Acre'))
 
 module.exports = {
     getAllEstados
