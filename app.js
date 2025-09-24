@@ -1,5 +1,5 @@
 /************************************************************************************
- * Objetivo: Api responsavel em criar endpoints rerentes estados e cidades
+ * Objetivo: Api responsavel em criar endpoints referentes a estados e cidades
  * Data: 15/05/2025
  * Autor: Paulo Vinicius
  * Versão 1.0
@@ -10,57 +10,77 @@
  *      body-parser - npm install body-parser --save Instala as dependencias para receber os tipos de dados via POST ou PUT
  ***********************************************************************************/
 
-// Import das dependencias 
+
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-//Import do arquivo de funções
-const dados    = require('./modulo/funcoes.js')
 
-//Define a porta padrão  da API, se for em um servir da nuvem não tem acesso a porta
-//em execução local definir uma porta livre
-const PORT = process.PORT || 8080
+const dados = require('./modulo/funcoes.js')
 
-//Istancia na classe do express
+
+const PORT = process.env.PORT || 8080
+
+
 const app = express()
 
-app.use((require, response, next)=>{ 
-    response.header('Access-Control-Allow-Origin', '*') //IP de Origem
-    response.header('Access-Control-Allow-Methods', 'GET') // Metodos (Verbos) do protocolo HTTP
 
+app.use((request, response, next)=>{ 
+    response.header('Access-Control-Allow-Origin', '*') 
+    response.header('Access-Control-Allow-Methods', 'GET') 
 
     app.use(cors())
     next()
 })
 
-
-//Request -> Recebe os dados na API
-//Response -> Envia os dados na API
-
-//EndPointsj
-app.get('/v1/estados',function(request,response){
-    // let estados = dados.getAllEstados()
-
-    // response.status(estados.statuscode)
-    // response.json(estados)
+app.get('/v1/estados', function(request, response){
+    let estados = dados.getAllEstados()
+    response.status(estados.statuscode)
+    response.json(estados)
 })
+
 
 app.get('/v1/estado/:uf', function(request, response){
-    let sigla = request.params.uf
-
-    console.log(sigla)
-})  
-
-app.get('/v1/regiao/estado/:id', function(request, response){
-    let regiaoEstados = request.query.regiao
-    let sigla         = request.query.uf
-    let id            = request.params.id
-
-    console.log(sigla) ,  console.log(regiaoEstados), console.log(id)
+    let sigla = request.params.uf.toUpperCase()
+    let estado = dados.getEstadoBySigla(sigla)
+    response.status(estado.statuscode)
+    response.json(estado)
 })
+
+
+app.get('/v1/capital/:uf', function(request, response){
+    let sigla = request.params.uf.toUpperCase()
+    let capital = dados.getCapitalBySigla(sigla)
+    response.status(capital.statuscode)
+    response.json(capital)
+})
+
+
+app.get('/v1/regiao/:regiao', function(request, response){''
+    let regiao = request.params.regiao
+    let estados = dados.getEstadosByRegiao(regiao)
+    response.status(estados.statuscode)
+    response.json(estados)
+})
+
+
+app.get('/v1/capitais/pais/:pais', function(request, response){
+    let pais = request.params.pais
+    let capitais = dados.getEstadosIsCapitalByCountry(pais)
+    response.status(capitais.statuscode)
+    response.json(capitais)
+})
+
+
+app.get('/v1/cidades/:uf', function(request, response){
+    let sigla = request.params.uf.toUpperCase()
+    let cidades = dados.getCidadesBySigla(sigla)
+    response.status(cidades.statuscode)
+    response.json(cidades)
+})
+
 
 
 app.listen(PORT, function(){
-    console.log('API aguardando requisições ....')
+    console.log(`API aguardando requisições na porta ${PORT} ....`)
 })

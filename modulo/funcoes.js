@@ -94,29 +94,25 @@ const getEstadosByRegiao = function(regiao){
             })
         })
 
-        return message;
+        return message
     } else {
-        return {
-            status: false,
-            statuscode: 404,
-            message: 'Região não encontrada.',
-            development: 'Paulo Vinicius Lima Da Silva'
+        return MESSAGE_ERROR
         }
     }
-}
+
 
 
 
 //Retorna a lista de estados 
 const getEstadosIsCapitalByCountry = function(pais) {
 
-    let message = {status: true,statuscode: 200,development: 'Paulo Vinicius Lima Da Silva',pais: pais,capitais: []};
+    let message = {status: true,statuscode: 200,development: 'Paulo Vinicius Lima Da Silva',pais: pais,capitais: []}
 
-    const estados = dados.listaDeEstados.estados;
+    const estados = dados.listaDeEstados.estados
 
     const resultado = estados.filter(function(item) {
-        return item.capital_pais && item.capital_pais.ano_inicio;
-    });
+        return item.capital_pais && item.capital_pais.ano_inicio
+    })
 
     if (resultado) {
         resultado.forEach(function(item) {
@@ -128,19 +124,15 @@ const getEstadosIsCapitalByCountry = function(pais) {
                 capital_atual: item.capital_pais.capital,
                 ano_inicio: item.capital_pais.ano_inicio,
                 ano_fim: item.capital_pais.ano_fim
-            });
-        });
+            })
+        })
 
         return message
     } else {
-        return {
-            status: false,
-            statuscode: 404,
-            message: 'Nenhuma capital encontrada para o país informado.',
-            development: 'Paulo Vinicius Lima Da Silva'
+        return MESSAGE_ERROR
         }
     }
-}
+
 
 
 
@@ -167,20 +159,16 @@ const getCidadesBySigla = function(sigla) {
 
         return message
     } else {
-        return {
-            status: false,
-            statuscode: 400,
-            message: 'Estado não encontrado.',
-            development: 'Paulo Vinicius Lima Da Silva'
+        return MESSAGE_ERROR
         }
     }
-}
 
-
-
-
-console.log(getCidadesBySigla('AC'))
 
 module.exports = {
-    getAllEstados
+    getAllEstados,
+    getCidadesBySigla,
+    getCapitalBySigla,
+    getEstadoBySigla,
+    getEstadosIsCapitalByCountry,
+    getEstadosByRegiao
 }
